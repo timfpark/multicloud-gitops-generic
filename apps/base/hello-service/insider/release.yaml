@@ -1,0 +1,24 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: hello-service-insider
+  namespace: default
+spec:
+  releaseName: hello-service-insider
+  chart:
+    spec:
+      chart: external-service
+      sourceRef:
+        kind: HelmRepository
+        name: workload-charts
+        namespace: flux-system
+      version: "1.0.2"
+  interval: 1h0m0s
+  timeout: 30m0s
+  install:
+    remediation:
+      retries: 3
+  values:
+    image:
+      tag: 20210608T021444Z # {"$imagepolicy": "flux-system:hello-service-insider:tag"}
+      repository: tpark.azurecr.io/hello-service-insider

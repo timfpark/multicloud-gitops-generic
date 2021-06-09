@@ -1,0 +1,38 @@
+#!/bin/bash
+
+export ACR_NAME=<INSERT ACR NAME HERE>
+export SUBSCRIPTION_ID=<INSERT SUBSCRIPTION ID HERE>
+export CLUSTER_NAME=<INSERT CLUSTER NAME HERE>
+export CLUSTER_RESOURCE_GROUP=<INSERT RESOURCE GROUP NAME HERE>
+
+echo "DEPLOYING CLUSTER"
+
+az group create --name $CLUSTER_RESOURCE_GROUP --location westus --subscription $SUBSCRIPTION_ID
+
+az aks create \
+	--resource-group $CLUSTER_RESOURCE_GROUP \
+	--name $CLUSTER_NAME \
+	--node-count 5 \
+	--node-vm-size Standard_D8as_v4 \
+    --auto-upgrade-channel stable \
+	--admin-username ops \
+	--ssh-key-value ~/.ssh/id_rsa.pub \
+	--enable-managed-identity \
+	--service-cidr 10.170.0.0/16 \
+	--dns-service-ip 10.170.0.10 \
+	--network-plugin azure
+
+echo "GETTING CREDENTIALS"
+
+az aks get-credentials \
+	--resource-group $CLUSTER_RESOURCE_GROUP \
+	--name $CLUSTER_NAME \
+	--overwrite-existing
+
+echo "CONNECTING TO ACR"
+
+az aks update -n $CLUSTER_NAME -g $CLUSTER_RESOURCE_GROUP --attach-acr $ACR_NAME
+
+echo "BOOTSTRAPPING FLUX"
+
+flux bootstrap github --owner=$GITHUB_USER --components-extra=image-reflector-controller,image-automation-controller --repository=multicloud-gitops --branch=main --path=clusters/azure --personal --network-policy=false

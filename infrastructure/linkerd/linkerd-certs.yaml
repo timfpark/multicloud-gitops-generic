@@ -1,0 +1,11 @@
+# Create your own trust anchors via https://linkerd.io/2.10/tasks/generate-certificates/ and insert here
+
+apiVersion: v1
+data:
+    ca.crt: <INSERT CA CRT BASE64 ENCODED>
+    issuer.crt: <INSERT ISSUER CRT BASE64 ENCODED>
+    issuer.key: <INSERT ISSUER KEY BASE64 ENCODED>
+kind: Secret
+metadata:
+    name: linkerd-certs
+    namespace: linkerd

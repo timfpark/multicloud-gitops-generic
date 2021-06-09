@@ -1,0 +1,11 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1alpha2
+kind: ImageRepository
+metadata:
+    name: hello-service-main
+    namespace: flux-system
+spec:
+    image: tpark.azurecr.io/hello-service-main
+    secretRef:
+        name: acr-secret
+    interval: 1m0s

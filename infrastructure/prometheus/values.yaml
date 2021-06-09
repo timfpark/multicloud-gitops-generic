@@ -1,0 +1,7 @@
+adminUser: "ops"
+alertmanager:
+    persistentVolume:
+        storageClass: "default"
+server:
+    persistentVolume:
+        storageClass": "default"

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: github-credentials
+    namespace: flux-system
+type: Opaque
+data:
+    username: <INSERT GITHUB USERNAME BASE64 ENCODED>
+    password: <INSERT GITHUB PASSWORD BASE64 ENCODED>
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+    name: gitops-repo
+    namespace: flux-system
+spec:
+    interval: 1m0s
+    ref:
+        branch: main
+    secretRef:
+        name: github-credentials
+    url: https://github.com/timfpark/multicloud-gitops

@@ -1,0 +1,12 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1alpha2
+kind: ImagePolicy
+metadata:
+    name: hello-service-insider
+    namespace: flux-system
+spec:
+    imageRepositoryRef:
+        name: hello-service-insider
+    policy:
+        alphabetical:
+            order: asc
